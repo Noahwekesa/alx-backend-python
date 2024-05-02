@@ -3,10 +3,8 @@
 Module for Type Annotation
 """
 
-type Input_list = List[float]
 
-
-def sum_list(input_list: Input_list) -> float:
+def sum_list(input_list: float) -> float:
     """
     Function that takes a list of integers as argument and returns their sum
     """
