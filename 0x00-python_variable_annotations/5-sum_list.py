@@ -4,7 +4,7 @@ Module for Type Annotation
 """
 
 
-def sum_list(input_list: float) -> float:
+def sum_list(input_list: list[float]) -> float:
     """
     Function that takes a list of integers as argument and returns their sum
     """
