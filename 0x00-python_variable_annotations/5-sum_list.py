@@ -3,12 +3,12 @@
 Module for Type Annotation
 """
 
+from typing import List
 
-def sum_list(input_list: list[float]) -> float:
+
+def sum_list(input_list: List[float]) -> float:
     """
     Function that takes a list of integers as argument and returns their sum
     """
-    total_sum = 0.0
-    for num in input_list:
-        total_sum += num
-    return total_sum
+
+    return sum(input_list)
