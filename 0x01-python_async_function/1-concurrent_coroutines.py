@@ -3,7 +3,6 @@
 module lets execute multiple coroutines at the same time
 """
 
-import random
 import asyncio
 
 wait_random = __import__("0-basic_async_syntax").wait_random
