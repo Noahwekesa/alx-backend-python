@@ -3,11 +3,18 @@
 measure_runtime should measure the total runtime and return it.
 """
 
-measure_runtime = __import__("0-basic_cache").measure_runtime
+import asyncio
+
+async_comprehension = __import__("1-async_comprehension").async_comprehension
 
 
-async def main():
+async def measure_runtime() -> float:
     """
-    Main function
+    measure_runtime should measure the total runtime and return it.
     """
-    print(f"Total runtime: {await measure_runtime()}")
+    import time
+
+    start = time.time()
+    await asyncio.gather(*(async_comprehension() for _ in range(4)))
+    end = time.time()
+    return end - start
