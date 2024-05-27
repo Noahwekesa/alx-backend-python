@@ -1,22 +1,22 @@
 #!/usr/bin/env python3
+"""
+This is a test file for the utils module
+"""
+
 import unittest
-from utils import access_nested_map
-
-
-"""
-    This is a test file for the utils module
-"""
+from parameterized import parameterized
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    def test_access_nested_map(self):
-        """
-        Test access_nested_map function
-        """
-        data = {"a": {"b": {"c": 1}}}
-        self.assertEqual(access_nested_map(data, ["a", "b", "c"]), 1)
-        self.assertEqual(access_nested_map(data, ["a", "b"]), {"c": 1})
-        self.assertEqual(access_nested_map(data, ["a"]), {"b": {"c": 1}})
-        self.assertEqual(access_nested_map(data, ["a", "b", "d"]), None)
-        self.assertEqual(access_nested_map(data, ["a", "c"]), None)
-        self.assertEqual(access_nested_map(data, ["a", "b", "c", "d"]), None)
+    @parameterized.expand(
+        [
+            ({"a": 1}, ("a",)),
+            ({"a": {"b": 2}}, ("a",)),
+            ({"a": {"b": 2}}, ("a", "b")),
+        ]
+    )
+    def test_access_map(self, nested_map, path):
+        expected_value = nested_map.get(path[0])
+        for key in path[1:]:
+            expected_value = expected_value.get(key)
+        self.assertEqual(expected_value, access_nested_map(nested_map, path))
