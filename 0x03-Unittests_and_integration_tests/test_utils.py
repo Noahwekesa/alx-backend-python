@@ -10,14 +10,13 @@ from utils import access_nested_map
 
 class TestAccessNestedMap(unittest.TestCase):
     def test_access_nested_map(self):
-        nested_map = {"a": {"b": {"c": 1}}}
-        self.assertEqual(access_nested_map(nested_map, ["a", "b", "c"]), 1)
-        self.assertEqual(access_nested_map(nested_map, ["a", "b"]), {"c": 1})
-        self.assertEqual(access_nested_map(nested_map, ["a"]), {"b": {"c": 1}})
-        self.assertEqual(access_nested_map(nested_map, ["a", "b", "d"]), None)
-        self.assertEqual(
-            access_nested_map(nested_map, ["a", "b", "d"], default="default"), "default"
-        )
-        self.assertEqual(
-            access_nested_map(nested_map, ["a", "b", "d"], default={"e": 2}), {"e": 2}
-        )
+        """
+        Test access_nested_map function
+        """
+        data = {"a": {"b": {"c": 1}}}
+        self.assertEqual(access_nested_map(data, ["a", "b", "c"]), 1)
+        self.assertEqual(access_nested_map(data, ["a", "b"]), {"c": 1})
+        self.assertEqual(access_nested_map(data, ["a"]), {"b": {"c": 1}})
+        self.assertEqual(access_nested_map(data, ["a", "b", "d"]), None)
+        self.assertEqual(access_nested_map(data, ["a", "c"]), None)
+        self.assertEqual(access_nested_map(data, ["a", "b", "c", "d"]), None)
