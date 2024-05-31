@@ -30,3 +30,12 @@ class TaskAccessNestedMap(unittest.TestCase):
         self.assertEqual(access_nested_map(data, ["b", "c"]), 2)
         self.assertIsNone(access_nested_map(data, ["a", "b"]))
         self.assertIsNone(access_nested_map(data, ["c", "d"]))
+
+    @parameterized.expand([(None, ["a", "b"], None)])
+    def test_access_nested_map_exception(self):
+        """
+        This method tests the access_nested_map function with exception
+        """
+        data = {"a": 1, "b": {"c": 2}}
+        with self.assertRaises(KeyError):
+            access_nested_map(data, ["a", "b"], "c")
