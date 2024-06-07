@@ -39,3 +39,68 @@ class TaskAccessNestedMap(unittest.TestCase):
         data = {"a": 1, "b": {"c": 2}}
         with self.assertRaises(KeyError):
             access_nested_map(data, ["a", "b"], "c")
+
+    if __name__ == "__main__":
+        unittest.main()
+
+
+class TestAccessNestedMap(unittest.TestCase):
+    """
+    This class tests the access_nested_map function
+    """
+
+    @parameterized.expand(
+        [
+            ({"a": 1, "b": {"c": 2}}, ["a"], 1),
+            ({"a": 1, "b": {"c": 2}}, ["b", "c"], 2),
+            ({"a": 1, "b": {"c": 2}}, ["a", "b"], None),
+            ({"a": 1, "b": {"c": 2}}, ["c", "d"], None),
+        ]
+    )
+    def test_access_nested_map(self, data, path, expected):
+        """
+        This method tests the access_nested_map function
+        """
+        self.assertEqual(access_nested_map(data, path), expected)
+
+    @parameterized.expand([(None, ["a", "b"], None)])
+    def test_access_nested_map_exception(self, data, path, expected):
+        """
+        This method tests the access_nested_map function with exception
+        """
+        with self.assertRaises(KeyError):
+            access_nested_map(data, path, "c")
+
+    if __name__ == "__main__":
+        unittest.main()
+
+
+class TestGetNestedMap(unittest.TestCase):
+    """
+    This class tests the get_nested_map function
+    """
+
+    @parameterized.expand(
+        [
+            ({"a": 1, "b": {"c": 2}}, ["a"], 1),
+            ({"a": 1, "b": {"c": 2}}, ["b", "c"], 2),
+            ({"a": 1, "b": {"c": 2}}, ["a", "b"], None),
+            ({"a": 1, "b": {"c": 2}}, ["c", "d"], None),
+        ]
+    )
+    def test_get_nested_map(self, data, path, expected):
+        """
+        This method tests the get_nested_map function
+        """
+        self.assertEqual(get_nested_map(data, path), expected)
+
+    @parameterized.expand([(None, ["a", "b"], None)])
+    def test_get_nested_map_exception(self, data, path, expected):
+        """
+        This method tests the get_nested_map function with exception
+        """
+        with self.assertRaises(KeyError):
+            get_nested_map(data, path, "c")
+
+    if __name__ == "__main__":
+        unittest.main()
