@@ -1,106 +1,77 @@
 #!/usr/bin/env python3
-"""
-This is a test file for the utils module
+
+""" Tests for utils.access_nested_map
 """
 
 import unittest
-from utils import access_nested_map
+import requests
+from utils import access_nested_map, get_json, memoize
 from parameterized import parameterized
-
-
-class TaskAccessNestedMap(unittest.TestCase):
-    """
-    This class tests the access_nested_map function
-    """
-
-    @parameterized.expand(
-        [
-            ({"a": 1, "b": {"c": 2}}, ["a"], 1),
-            ({"a": 1, "b": {"c": 2}}, ["b", "c"], 2),
-            ({"a": 1, "b": {"c": 2}}, ["a", "b"], None),
-            ({"a": 1, "b": {"c": 2}}, ["c", "d"], None),
-        ]
-    )
-    def test_access_nested_map(self):
-        """
-        This method tests the access_nested_map function
-        """
-        data = {"a": 1, "b": {"c": 2}}
-        self.assertEqual(access_nested_map(data, ["a"]), 1)
-        self.assertEqual(access_nested_map(data, ["b", "c"]), 2)
-        self.assertIsNone(access_nested_map(data, ["a", "b"]))
-        self.assertIsNone(access_nested_map(data, ["c", "d"]))
-
-    @parameterized.expand([(None, ["a", "b"], None)])
-    def test_access_nested_map_exception(self):
-        """
-        This method tests the access_nested_map function with exception
-        """
-        data = {"a": 1, "b": {"c": 2}}
-        with self.assertRaises(KeyError):
-            access_nested_map(data, ["a", "b"], "c")
-
-    if __name__ == "__main__":
-        unittest.main()
+from unittest.mock import Mock, patch
 
 
 class TestAccessNestedMap(unittest.TestCase):
-    """
-    This class tests the access_nested_map function
-    """
-
-    @parameterized.expand(
-        [
-            ({"a": 1, "b": {"c": 2}}, ["a"], 1),
-            ({"a": 1, "b": {"c": 2}}, ["b", "c"], 2),
-            ({"a": 1, "b": {"c": 2}}, ["a", "b"], None),
-            ({"a": 1, "b": {"c": 2}}, ["c", "d"], None),
-        ]
-    )
-    def test_access_nested_map(self, data, path, expected):
-        """
-        This method tests the access_nested_map function
-        """
-        self.assertEqual(access_nested_map(data, path), expected)
-
-    @parameterized.expand([(None, ["a", "b"], None)])
-    def test_access_nested_map_exception(self, data, path, expected):
-        """
-        This method tests the access_nested_map function with exception
-        """
-        with self.assertRaises(KeyError):
-            access_nested_map(data, path, "c")
-
-    if __name__ == "__main__":
-        unittest.main()
-
-
-class TestGetNestedMap(unittest.TestCase):
-    """
-    This class tests the get_nested_map function
+    """ Test class for utils.access_nested_map
     """
 
-    @parameterized.expand(
-        [
-            ({"a": 1, "b": {"c": 2}}, ["a"], 1),
-            ({"a": 1, "b": {"c": 2}}, ["b", "c"], 2),
-            ({"a": 1, "b": {"c": 2}}, ["a", "b"], None),
-            ({"a": 1, "b": {"c": 2}}, ["c", "d"], None),
-        ]
-    )
-    def test_get_nested_map(self, data, path, expected):
+    @parameterized.expand([({"a": 1}, ("a",), 1),
+                           ({"a": {"b": 2}}, ("a",), {"b": 2}),
+                           ({"a": {"b": 2}}, ("a", "b"), 2)])
+    def test_access_nested_map(self, nested_map, path, expected):
+        """ Test acesss_nested_map
         """
-        This method tests the get_nested_map function
-        """
-        self.assertEqual(get_nested_map(data, path), expected)
+        self.assertEqual(access_nested_map(nested_map, path), expected)
 
-    @parameterized.expand([(None, ["a", "b"], None)])
-    def test_get_nested_map_exception(self, data, path, expected):
+    @parameterized.expand([({}, ("a",), KeyError),
+                           ({"a": 1}, ("a", "b"), KeyError)])
+    def test_access_nested_map_exception(self, nested_map, path, expected):
+        """ Test acesss_nested_map exception
         """
-        This method tests the get_nested_map function with exception
-        """
-        with self.assertRaises(KeyError):
-            get_nested_map(data, path, "c")
+        self.assertRaises(expected)
 
-    if __name__ == "__main__":
-        unittest.main()
+
+class TestGetJson(unittest.TestCase):
+    """ Test class for utils.get_json
+    """
+
+    @parameterized.expand([("http://example.com", {"payload": True}),
+                           ("http://holberton.io", {"payload": False})])
+    def test_get_json(self, test_url, test_payload):
+        """ Test get_json and create mock test
+        """
+        mock = Mock()
+        mock.json.return_value = test_payload
+        with patch('requests.get', return_value=mock):
+            get_json_response = get_json(test_url)
+            self.assertEqual(get_json_response, test_payload)
+            mock.json.assert_called_once()
+
+
+class TestMemoize(unittest.TestCase):
+    """ Test class for utils.memoize
+    """
+
+    def test_memoize(self):
+        """ Test util.memoize
+        """
+        class TestClass:
+            """ A example class to test against
+            """
+
+            def a_method(self):
+                """ returns 42
+                """
+                return 42
+
+            @memoize
+            def a_property(self):
+                """ Memoizis a_method and returns 42
+                """
+                return self.a_method()
+
+        with patch.object(TestClass, 'a_method', return_value=42) as mock:
+            test_class = TestClass()
+            a_property_return = test_class.a_property
+            a_property_return = test_class.a_property
+            self.assertEqual(a_property_return, 42)
+            mock.assert_called_once()
